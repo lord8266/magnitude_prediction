@@ -3,8 +3,7 @@
 ## Details
 **using the
 [usgs dataset](http://www.reddit.comhttps://www.kaggle.com/usgs/earthquake-database)
-the magnitude and depth is predicted using the history of earthquakes
-**
+the magnitude and depth is predicted using the history of earthquakes**
 <br>
 **Using Linear regression as of now**
 
@@ -17,8 +16,8 @@ the magnitude and depth is predicted using the history of earthquakes
   ```
   <br>
 
-  **then run ** *m=<your_filename> make* <br>
-  **Example **
+  **then run** *m=<your_filename> make* <br>
+  **Example**
   ```
     m=read make
   ```
