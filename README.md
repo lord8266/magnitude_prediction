@@ -1,7 +1,7 @@
 # Earthquake impact prediction
 
 ## Details
-** using the
+**using the
 [usgs dataset](http://www.reddit.comhttps://www.kaggle.com/usgs/earthquake-database)
 the magnitude and depth is predicted using the history of earthquakes
 **
