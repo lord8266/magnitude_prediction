@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct {
-    float *elems;
-    int rows;
-    int cols;
+    double *elems;
+    unsigned long rows;
+    unsigned long cols;
 }matrix;
 
 
@@ -17,4 +17,5 @@ matrix* multiply_matrix(matrix * m1,matrix* m2) ;
 matrix *transpose(matrix*);
 void fill_matrix(matrix* m1,int val);
 void set_identity(matrix* m1);
+matrix *invert(matrix *); 
 #endif

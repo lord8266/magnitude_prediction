@@ -1,15 +1,15 @@
 #include "header.h"
+#include "lapack/lapack_wrapper.h"
 
-
-void print_row(float *data,int len) {
+void print_row(double *data,int stride,int len ) {
      printf("[");
     if(len>10) {
-    for (int j=0;j<3;j++) {
-        printf("%8.4f, ",data[j]);
+    for (int j=0;j<3;j+=1) {
+        printf("%8.4f, ",data[j*stride]);
     }
     printf(" ... ");
-        for (int j=len-3;j<len;j++) {
-        printf("%8.4f",data[j]);
+        for (int j=len-3;j<len;j+=1) {
+        printf("%8.4f",data[j*stride]);
         if(j!=(len-1))
             printf(", ");
         else
@@ -18,8 +18,8 @@ void print_row(float *data,int len) {
     
     }
     else {
-        for (int j=0;j<len;j++) {
-            printf("%8.4f",data[j]);
+        for (int j=0;j<len;j+=1) {
+            printf("%8.4f",data[j*stride]);
             if(j!=(len-1))
                 printf(", ");
             else
@@ -34,49 +34,51 @@ void print_matrix(matrix *m) {
 
     if(m->rows>60) {
          for (int i=0;i<3;i++) {
-              print_row(m->elems+m->cols*i,m->cols);
+              print_row(m->elems+i,m->rows,m->cols);
         }
         printf("\n\t.\n\t.\n\t.\n\n");
         for (int i=m->rows-3;i<m->rows;i++) {
-            print_row(m->elems+m->cols*i,m->cols);
+            print_row(m->elems+i,m->rows,m->cols);
         }
     }
     else {
         for (int i=0;i<m->rows;i++) {
-            print_row(m->elems+m->cols*i,m->cols);
+            print_row(m->elems+i,m->rows,m->cols);
         }
     }
     
-    printf("Shape: (%d, %d)\n",m->rows,m->cols);
+    printf("Shape: (%ld, %ld)\n",m->rows,m->cols);
 }
 
 
 matrix* alloc_matrix(int rows,int cols) {
+    unsigned long long i1 = rows;
+    unsigned long long i2 =cols;
+
     matrix *m = malloc(sizeof(matrix));
     m->rows =rows;
     m->cols = cols;
-    m->elems = malloc(rows*cols*4);
+    m->elems = malloc(i1*i2*8);
     return m;
 }
 
 matrix* multiply_matrix(matrix * m1,matrix* m2) {
+    if(m1->cols==m2->rows) {
+
     matrix *m3 = alloc_matrix(m1->rows,m2->cols);
-    for (int i=0;i<m3->rows;i++) {
-        for (int j=0;j<m3->cols;j++) {
-            m3->elems[i*m3->cols+j] =0;
-            for (int k=0;k<m1->cols;k++) { 
-                m3->elems[i*m3->cols+j]+= m1->elems[i*m1->cols+k]*m2->elems[k*m2->cols+j];
-               
-            }
-            
-        }
-    }
+    matrix *temp = alloc_matrix(m3->rows,m3->cols);
+    matrix_matrix_mult(m1->rows,m2->cols,m2->rows,1.0,0.0,m1->elems,m2->elems,m3->elems);
+
     return m3;
+    }
+    else {
+        return 0; 
+    }
 }
 
 void fill_matrix(matrix* m,int val) {
-    for (int r=0;r<m->rows;r++) {
-        for (int c=0;c<m->cols;c++) {
+    for (int c=0;c<m->rows;c++) {
+        for (int r=0;r<m->cols;r++) {
 
             m->elems[r*m->cols+c]=val;
         }
@@ -84,22 +86,28 @@ void fill_matrix(matrix* m,int val) {
 }
 
 void set_identity(matrix* m) {
-    for (int r=0;r<m->rows;r++) {
-        for (int c=0;c<m->cols;c++) {
+    for (int c=0;c<m->rows;c++) {
+        for (int r=0;r<m->cols;r++) {
             if(r==c)
-                m->elems[r*m->cols+c]=1;
+                m->elems[r+c*m->rows]=1;
             else
-                m->elems[r*m->cols+c]=0;
+                m->elems[r+c*m->rows]=0;
         }
     }
 }
 
 matrix* transpose(matrix *m1) {
     matrix *m2 = alloc_matrix(m1->cols,m1->rows);
-    for (int r=0;r<m1->rows;r++) {
-        for (int c=0;c<m1->cols;c++) {
-            m2->elems[c*m2->cols+r] = m1->elems[r*m1->cols+c];
+    for (int c=0;c<m1->cols;c++) {
+        for (int r=0;r<m1->rows;r++) {
+            m2->elems[r*m2->rows+c] = m1->elems[r+c*m1->rows];
         }
     }
+    return m2;
+}
+
+matrix *invert(matrix *m) {
+    matrix *m2 = alloc_matrix(m->rows,m->cols);
+    matrix_invert(m->cols,m->elems,m2->elems);
     return m2;
 }
