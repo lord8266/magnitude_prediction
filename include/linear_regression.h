@@ -3,7 +3,7 @@
 
 #include "matrix.h"
 
-void split_matrix_row(matrix* start,matrix **m1,matrix **m2,double ratio);
+void    split_matrix_row(matrix* start,matrix **m1,matrix **m2,double ratio);
 matrix* prepend_x0(matrix *m); 
 
 matrix* fit(matrix *X_,matrix *y) ;
