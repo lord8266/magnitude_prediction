@@ -14,19 +14,27 @@ int main() {
     matrix *X_train=NULL,*y_train=NULL;
     matrix *X_test=NULL,*y_test=NULL;
 
-    split_matrix_row(features,&X_train,&X_test,0.7); //split features into X_train and X_test
-    split_matrix_row(target,&y_train,&y_test,0.7); //split features into y_train and y_test
+    split_matrix_row(features,&X_train,&X_test,0.7);    //split features into X_train and X_test
+    split_matrix_row(target,&y_train,&y_test,0.7);      //split features into y_train and y_test
     
     //Data is now split in 70:30 ratio
 
-    matrix *params = fit(X_train,y_train);
-    matrix *prediction = predict(X_test,params);
+    matrix *params = fit(X_train,y_train);              // call fit to get parameters
+    matrix *prediction = predict(X_test,params);        // basically multiply the two matrices
 
+    printf("Target Matrix\n");
     print_matrix(prediction);
-    print_matrix(y_test);
+    printf("\n");
+
+    printf("Prediction Matrix\n");
+    print_matrix(prediction);
+    printf("\n");
 
     matrix *err = rmse(prediction,y_test);
+
+    printf("RMSE for Magnitude ,Prediction\n");
     print_matrix(err);
+    printf("\n");
 
     free_matrix(features);
     free_matrix(target);

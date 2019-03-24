@@ -1,7 +1,7 @@
 #include "include/header.h"
 
 void read_line(char *buf,matrix* features,matrix* target,int pos) {
-
+    //reads data into features and target 
     char *curr = strtok(buf,",");
 
     for (unsigned long i=0;i<features->cols;i++) {
@@ -29,6 +29,7 @@ void read_csv(char *file,matrix *features,matrix* target) {
 
 
     fgets(buf,500,contents);
+    //ignore the first line (they are data labels)
 
     for(int i=0;i<features->rows;i++) {
         fgets(buf,500,contents);

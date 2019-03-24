@@ -1,8 +1,8 @@
 #include "include/header.h"
 
-matrix * prepend_x0(matrix *m) {
+matrix * prepend_x0(matrix *m) { //add x0 =1 
 
-    matrix *ret = alloc_matrix(m->rows,m->cols+1);
+    matrix *ret = alloc_matrix(m->rows,m->cols+1); //allocate a new matrix with +1 cols
 
     for (int r=0;r<m->rows;r++) {
         ret->elems[r] = 1;
@@ -21,6 +21,8 @@ matrix *fit(matrix *X_,matrix *y) {
 
     matrix *X = prepend_x0(X_);
 
+    //Normal equation = (X_t*X)^-1 * X_t * y
+
     matrix *X_transpose =   transpose(X); // transpose of x
     matrix *X_mult      =   multiply_matrix(X_transpose,X); // multiply transpose*X
     matrix *inv         =   invert(X_mult);// then invert the matrix 
@@ -36,7 +38,7 @@ matrix *fit(matrix *X_,matrix *y) {
 }
 
 matrix *predict(matrix *X_,matrix* params) {
-    matrix *X = prepend_x0(X_);
+    matrix *X = prepend_x0(X_); //create a temporary matrix with x0 = 1
     matrix *prediction = multiply_matrix(X,params);
     free_matrix(X);
     return prediction;
@@ -45,7 +47,8 @@ matrix *predict(matrix *X_,matrix* params) {
 
 
 matrix *rmse(matrix* pred,matrix *target) {
-
+    
+    //calculate rmse of prediction 
     int rows = pred->rows,cols = pred->cols;
     matrix *ret = alloc_matrix(1,cols);
 
@@ -64,6 +67,9 @@ matrix *rmse(matrix* pred,matrix *target) {
 }
 
 void split_matrix_row(matrix* start,matrix **m1,matrix **m2,double ratio) {
+
+    //takes a pointer to pointer to matrix and splits start into m1 and m2 in ratio
+    
     int sep = ratio*start->rows;
     *m1 =alloc_matrix(sep,start->cols);
     *m2 = alloc_matrix(start->rows-sep,start->cols);
