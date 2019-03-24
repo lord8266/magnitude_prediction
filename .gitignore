@@ -4,3 +4,6 @@ read
 store
 parse_file.c
 lapack_example
+images
+docs*
+tree.txt

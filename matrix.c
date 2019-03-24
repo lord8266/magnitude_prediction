@@ -1,4 +1,4 @@
-#include "header.h"
+#include "include/header.h"
 #include "lapack/lapack_wrapper.h"
 
 void print_row(double *data,int stride,int len ) {
@@ -47,7 +47,7 @@ void print_matrix(matrix *m) {
         }
     }
     
-    printf("Shape: (%ld, %ld)\n",m->rows,m->cols);
+    printf("Shape: (%d, %d)\n",m->rows,m->cols);
 }
 
 
@@ -63,17 +63,16 @@ matrix* alloc_matrix(int rows,int cols) {
 }
 
 matrix* multiply_matrix(matrix * m1,matrix* m2) {
+    matrix *m3 = NULL;
     if(m1->cols==m2->rows) {
 
-    matrix *m3 = alloc_matrix(m1->rows,m2->cols);
+    m3 = alloc_matrix(m1->rows,m2->cols);
     matrix *temp = alloc_matrix(m3->rows,m3->cols);
     matrix_matrix_mult(m1->rows,m2->cols,m2->rows,1.0,0.0,m1->elems,m2->elems,m3->elems);
-
+    free_matrix(temp);
+    }
     return m3;
-    }
-    else {
-        return 0; 
-    }
+    
 }
 
 void fill_matrix(matrix* m,int val) {
@@ -106,8 +105,14 @@ matrix* transpose(matrix *m1) {
     return m2;
 }
 
+
 matrix *invert(matrix *m) {
     matrix *m2 = alloc_matrix(m->rows,m->cols);
     matrix_invert(m->cols,m->elems,m2->elems);
     return m2;
+}
+
+void free_matrix(matrix *m) {
+    free(m->elems);
+    free(m);
 }
